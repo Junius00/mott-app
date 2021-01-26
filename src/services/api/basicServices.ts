@@ -27,6 +27,7 @@ export const getHTTPRes = async function(path: String, method: String, bodyJSON?
         headers: headers
     }
 
+    console.log(getURL(path));
     return await nodeFetch(getURL(path), options);
 }
 

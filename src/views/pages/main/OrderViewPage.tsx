@@ -1,25 +1,42 @@
-import { useState } from 'react';
-import { Redirect, RouteComponentProps } from 'react-router-dom';
-import { CircularProgress, Container, Grid, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@material-ui/core';
+import { RouteComponentProps } from 'react-router-dom';
+import { Container, Grid, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@material-ui/core';
 import Order from '../../../models/order/Order';
 import { getRestaurantNameById } from '../../../services/api/restaurantsServices';
 import { getAuthTokenFromStorage } from '../../../sessionStorage/storageServices';
 import BoxWithAppBar from '../../blocks/general/BoxWithAppBar';
 import CenteredPaper from '../../blocks/general/CenteredPaper';
+import React from 'react';
 
 interface OrderViewPageProps extends RouteComponentProps {}
+interface OrderViewPageState {
+    listChildren: JSX.Element[],
+    loading: boolean
+}
+export default class OrderViewPage extends React.Component<OrderViewPageProps, OrderViewPageState> {
+    constructor(props: OrderViewPageProps) {
+        super(props);
+        this.state = {
+            listChildren: [],
+            loading: false
+        }
 
-export default function OrderViewPage(props: OrderViewPageProps) {
-    const [ listChildren, setListChildren ] = useState<JSX.Element[]>([]);
+        this.getListChildren = this.getListChildren.bind(this);
+    }
 
-    const state: any = props.location.state;
-    if (!state) return (<Redirect to='/orders' />);
-    const order: Order = new Order(state.order);
+    componentDidMount() {
+        console.log('mount');
+        this.getListChildren();
+    }
+    
+    async getListChildren() {
+        const state: any = this.props.location.state;
+        if (!state) return;
+        const order: Order = new Order(state.order);
 
-    async function getListChildren() {
         const orderById = order.getOrderByRestaurantIds();
         let listChildren: Array<JSX.Element> = [];
 
+        this.setState({ loading: true });
         for (let restaurantId in orderById) {
             const sets = orderById[restaurantId];
 
@@ -53,27 +70,37 @@ export default function OrderViewPage(props: OrderViewPageProps) {
             listChildren.push(element);
         }
 
-        setListChildren(listChildren);
+        this.setState({
+            listChildren: listChildren,
+            loading: false
+        });
     }
 
-    getListChildren();
-
-    return (
-        <BoxWithAppBar backPath='/orders'>
-            <CenteredPaper>
-                <Container>
-                    <Grid container>
-                        <Grid item xs={12}>
-                            <Typography variant='h4'>here's that order you made.</Typography>
+    render() {
+        return (
+            <BoxWithAppBar backPath='/orders'>
+                <CenteredPaper>
+                    <Container>
+                        <Grid container>
+                            <Grid item xs={12}>
+                                <Typography variant='h4'>here's that order you made.</Typography>
+                            </Grid>
+                            {
+                                this.state.listChildren.length > 0 
+                                ? this.state.listChildren 
+                                : <Typography>
+                                    {
+                                        this.state.loading
+                                        ? 'making it pretty for you to admire.'
+                                        : "couldn't get anything. try again later?"
+                                    }
+                                </Typography>
+                            }
                         </Grid>
-                        {
-                            listChildren.length > 0 
-                            ? listChildren 
-                            : <Typography>making it pretty for you to admire.</Typography>
-                        }
-                    </Grid>
-                </Container>
-            </CenteredPaper>
-        </BoxWithAppBar>
-    );
+                    </Container>
+                </CenteredPaper>
+            </BoxWithAppBar>
+        );
+    }
+        
 }
