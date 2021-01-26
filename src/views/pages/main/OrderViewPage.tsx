@@ -11,7 +11,7 @@ interface OrderViewPageProps extends RouteComponentProps {}
 
 export default function OrderViewPage(props: OrderViewPageProps) {
     const [ listChildren, setListChildren ] = useState<JSX.Element[]>([]);
-    
+
     const state: any = props.location.state;
     if (!state) return (<Redirect to='/orders' />);
     const order: Order = new Order(state.order);
@@ -66,7 +66,11 @@ export default function OrderViewPage(props: OrderViewPageProps) {
                         <Grid item xs={12}>
                             <Typography variant='h4'>here's that order you made.</Typography>
                         </Grid>
-                        {listChildren.length > 0 ? listChildren : <CircularProgress />}
+                        {
+                            listChildren.length > 0 
+                            ? listChildren 
+                            : <Typography>making it pretty for you to admire.</Typography>
+                        }
                     </Grid>
                 </Container>
             </CenteredPaper>

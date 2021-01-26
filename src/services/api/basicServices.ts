@@ -6,12 +6,11 @@ import { refreshAuth } from "../pages/reauthServices";
 const nodeFetch = require('node-fetch');
 
 const HOST = process.env.REACT_APP_API_HOST;
-const PORT = process.env.REACT_APP_API_PORT;
 const JSON_HEADER = process.env.REACT_APP_API_JSON_HEADER;
 
 //returns URL based on path
 export const getURL = function(path: String) {
-    return `http://${HOST}:${PORT}/${path}`;
+    return `${HOST}/${path}`;
 }
 
 //gets preliminary response from HTTPS request

@@ -100,6 +100,7 @@ export default class RestaurantsDisplayGrid extends React.Component<RestaurantsD
 
     render() {
         const hasRestaurants: boolean = this.state.restaurants.length > 0;
+        const loading = this.state.loading;
         return (
             <List>
                 <ListItem>
@@ -117,7 +118,9 @@ export default class RestaurantsDisplayGrid extends React.Component<RestaurantsD
                                     setPopUpChild={this.props.setPopUpChild}
                                 />
                             ))
-                            : <Typography align='center'>no restaurants open now. try again another time?</Typography>
+                            : loading
+                                ? <Typography align='center'>patience, young man, we're loading...</Typography>
+                                : <Typography align='center'>no restaurants open now. try again another time?</Typography>
                         }
                     </Grid>
                 </ListItem>
