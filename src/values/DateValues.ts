@@ -1,0 +1,1 @@
+export const DaysOfWeek: Array<string> = ['Sun', 'Mon', 'Tues', 'Wed', 'Thu', 'Fri', 'Sat'];
