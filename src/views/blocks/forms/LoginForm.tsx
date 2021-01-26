@@ -15,7 +15,8 @@ export default class LoginForm extends React.Component<{ refreshAuth: () => void
             hasError: false,
             errorMsg: '',
             username: '',
-            password: ''
+            password: '',
+            loading: false
         };
 
         this.onUsernameChange = this.onUsernameChange.bind(this);
@@ -37,6 +38,7 @@ export default class LoginForm extends React.Component<{ refreshAuth: () => void
 
     async onSubmit(event: any) {
         event.preventDefault();
+        this.setState({ loading: true });
 
         const apiResponse: ApiResponse = await userEntry(
             this.state.username,
@@ -51,7 +53,8 @@ export default class LoginForm extends React.Component<{ refreshAuth: () => void
         if (!apiResponse.success) {
             this.setState({
                 hasError: true,
-                errorMsg: apiResponse.error
+                errorMsg: apiResponse.error,
+                loading: false
             });
             return;
         }
@@ -69,7 +72,7 @@ export default class LoginForm extends React.Component<{ refreshAuth: () => void
         
         //force Routes to check whether authentication is complete
         this.props.refreshAuth();
-        this.setState({ redirect: true, redirectPath: '/' });
+        this.setState({ redirect: true, redirectPath: '/', loading: false });
     }
 
     render() {
@@ -85,6 +88,13 @@ export default class LoginForm extends React.Component<{ refreshAuth: () => void
             {this.state.errorMsg}
         </Typography>;
         
+        const loadingTypography = <Typography
+            align='center'
+            variant='subtitle2'
+        >
+            checking with our bosses...
+        </Typography>;
+
         return (
             <form onSubmit={this.onSubmit}>
                 <List>
@@ -113,6 +123,7 @@ export default class LoginForm extends React.Component<{ refreshAuth: () => void
                     </ListItem>
                     <ListItem>
                         {this.state.hasError ? errorTypography : null}
+                        {this.state.loading ? loadingTypography : null}
                     </ListItem>
                     <ListItem>
                         <Button

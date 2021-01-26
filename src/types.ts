@@ -11,7 +11,16 @@ export interface apiResponseOptions {
     body?: LooseObject 
 }
 
-export type loginFormState = { redirect: boolean, redirectPath: string, hasError: boolean, errorMsg?: string, username: string, password: string };
+export type loginFormState = { 
+    redirect: boolean, 
+    redirectPath: string, 
+    hasError: boolean, 
+    errorMsg?: string, 
+    username: string, 
+    password: string,
+    loading: boolean 
+};
+
 export interface registerFormState extends loginFormState {
     confirmPassword: string
 }

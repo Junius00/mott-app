@@ -16,7 +16,8 @@ export default class RegisterForm extends React.Component<{ refreshAuth: () => v
             errorMsg: '',
             username: '',
             password: '',
-            confirmPassword: ''
+            confirmPassword: '',
+            loading: false
         };
 
         this.onUsernameChange = this.onUsernameChange.bind(this);
@@ -44,7 +45,8 @@ export default class RegisterForm extends React.Component<{ refreshAuth: () => v
     throwError(errorMsg: string) {
         this.setState({
             hasError: true,
-            errorMsg: errorMsg
+            errorMsg: errorMsg,
+            loading: false
         });
     }
 
@@ -56,6 +58,7 @@ export default class RegisterForm extends React.Component<{ refreshAuth: () => v
             return;
         }
 
+        this.setState({ loading: true });
         const apiResponse: ApiResponse = await userEntry(
             this.state.username,
             this.state.password,
@@ -84,7 +87,7 @@ export default class RegisterForm extends React.Component<{ refreshAuth: () => v
         
         //force Routes to check whether authentication is complete
         this.props.refreshAuth();
-        this.setState({ redirect: true, redirectPath: '/' });
+        this.setState({ redirect: true, redirectPath: '/', loading: false });
     }
 
     render() {
@@ -100,6 +103,13 @@ export default class RegisterForm extends React.Component<{ refreshAuth: () => v
             {this.state.errorMsg}
         </Typography>;
         
+        const loadingTypography = <Typography
+            align='center'
+            variant='subtitle2'
+        >
+            checking with our bosses...
+        </Typography>;
+
         return (
             <form onSubmit={this.onSubmit}>
                 <List>
@@ -140,6 +150,7 @@ export default class RegisterForm extends React.Component<{ refreshAuth: () => v
                     </ListItem>
                     <ListItem>
                         {this.state.hasError ? errorTypography : null}
+                        {this.state.loading ? loadingTypography : null}
                     </ListItem>
                     <ListItem>
                         <Button
